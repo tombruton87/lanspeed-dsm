@@ -1,0 +1,2 @@
+slow="A scheduled LAN Speed test to {0} came in at {1} Mbit/s, below your {2} Mbit/s. Open LAN Speed from the main menu → History."
+testfailed="A scheduled LAN Speed test to {0} failed: {1}. Is the device on? Open LAN Speed from the main menu → History."

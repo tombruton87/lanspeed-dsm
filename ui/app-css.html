@@ -1,0 +1,22 @@
+  :root { --ls-to: #2a78d6; --ls-from: #eb6834; }
+  .f .hint { display: block; color: var(--muted); font-size: 12px; margin-top: 2px; }
+  .ls-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(210px, 1fr)); gap: 0 16px; }
+  .ls-grid input, .ls-grid select { max-width: none; }
+  .ls-h3 { font-size: 13px; font-weight: 600; margin: 6px 0 10px; }
+  .ls-bar { height: 6px; background: var(--soft); border: 1px solid var(--line); border-radius: 4px; overflow: hidden; max-width: 420px; } .ls-bar i { display: block; height: 100%; width: 0; background: var(--blue); transition: width 1s linear; }
+  .ls-filters { margin-bottom: 12px; } .ls-filters select { width: auto; max-width: 240px; }
+  .ls-legend { display: inline-flex; gap: 14px; font-size: 12px; color: var(--muted); } .ls-legend i { display: inline-block; width: 14px; height: 3px; border-radius: 2px; vertical-align: middle; margin-right: 6px; }
+  .ls-chart { position: relative; min-height: 220px; } .ls-chart svg { display: block; width: 100%; height: 220px; overflow: visible; }
+  .ls-chart .grid line { stroke: var(--line); stroke-width: 1; } .ls-chart text { font: 11px var(--font); fill: var(--muted); }
+  .ls-chart .tip { position: absolute; pointer-events: none; background: #fff; border: 1px solid var(--line); border-radius: 4px; box-shadow: 0 2px 8px rgba(0,0,0,.08); padding: 6px 9px; font-size: 12px; white-space: nowrap; }
+  .ls-chart .tip i { display: inline-block; width: 8px; height: 8px; border-radius: 50%; margin-right: 6px; }
+  .ls-scroll { max-height: 460px; overflow: auto; }
+  .ls-num { font-variant-numeric: tabular-nums; white-space: nowrap; }
+  .sub { display: block; color: var(--muted); font-size: 12px; }
+  .ls-howto { display: flex; gap: 24px; flex-wrap: wrap; align-items: flex-start; }
+  .ls-qr { width: 170px; height: 170px; image-rendering: pixelated; border: 1px solid var(--line); border-radius: 8px; background: #fff; flex: none; }
+  .ls-addr { font: 600 15px/1.3 var(--mono); background: var(--soft); border: 1px solid var(--line); padding: 5px 10px; border-radius: 4px; user-select: all; word-break: break-all; }
+  .ls-cmds td { padding: 7px 10px 7px 0; border: 0; vertical-align: top; } .ls-cmds td.k { width: 34%; color: var(--muted); } .ls-cmds code { user-select: all; word-break: break-all; }
+  .ls-list { margin: 0; padding-left: 18px; } .ls-list li { margin-bottom: 6px; }
+  tr.ls-failed td { color: var(--muted); }
+  #hi-rows td:first-child, #sc-recent td:first-child { white-space: nowrap; }

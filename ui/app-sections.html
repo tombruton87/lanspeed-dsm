@@ -1,0 +1,84 @@
+    <section data-page="run" hidden>
+      <div class="note">Runs iperf3 from this Synology to another device on your network. That device needs iperf3 running as a server — <code>iperf3 -s</code> on a PC (see <a href="#" data-goto="howto">How to test</a>), or the iperf3 server many routers, access points and NAS boxes have built in.</div>
+      <div class="card"><h2>Test</h2><div class="in ls-form">
+        <div class="ls-grid">
+          <label class="f"><span>Device</span><select id="rt-dev"><option value="">Another address…</option></select></label>
+          <label class="f"><span>Address (IP or name)</span><input type="text" id="rt-host" maxlength="253" placeholder="192.168.1.31" autocomplete="off" spellcheck="false"></label>
+          <label class="f"><span>Its iperf3 port</span><input type="number" id="rt-port" min="1" max="65535" value="5201"></label>
+          <label class="f"><span>Protocol</span><select id="rt-proto"><option value="tcp">TCP — throughput</option><option value="udp">UDP — jitter and packet loss</option></select></label>
+          <label class="f"><span>Direction</span><select id="rt-dir"><option value="up">Upload: Synology → device</option><option value="down">Download: device → Synology (-R)</option><option value="both">Both, one after the other</option></select></label>
+          <label class="f"><span>Seconds (each direction)</span><input type="number" id="rt-secs" min="1" max="60" value="10"></label>
+          <label class="f"><span>Parallel streams</span><input type="number" id="rt-streams" min="1" max="16" value="1"><span class="hint">More than one fills fast links (-P).</span></label>
+          <label class="f" id="rt-rate-f" hidden><span>UDP: send at (Mbit/s)</span><input type="number" id="rt-rate" min="1" max="10000" value="100"><span class="hint">UDP sends at the rate you set; loss shows what didn't arrive.</span></label>
+        </div>
+        <p class="row"><button class="btn primary" id="rt-go" data-app>Run the test</button> <button class="btn" id="rt-save" data-app>Save as a device…</button> <span class="muted small" id="rt-cmd"></span></p>
+        <div id="rt-running" hidden><div class="ls-bar"><i id="rt-bar"></i></div><p class="muted small" id="rt-running-text"></p></div>
+      </div></div>
+      <div class="card" id="rt-result-card" hidden><h2>Result<span class="right muted small" id="rt-when"></span></h2><div class="in"><div class="tiles" id="rt-result"></div><p id="rt-result-note" class="small"></p></div></div>
+      <div class="card"><h2>Devices</h2><table><thead><tr><th>Name</th><th>Address</th><th class="n">Port</th><th>Latest</th><th class="n"></th></tr></thead><tbody id="rt-devices"></tbody></table>
+        <div class="in"><p class="muted small">Give your devices names here — they're used in History and for the schedule. A device's browser tests and its tests against this Synology are matched by its address, so give it a fixed one (a DHCP reservation in your router).</p></div></div>
+    </section>
+
+    <section data-page="history" hidden>
+      <div class="note">Every test: those run here and on the schedule, those other devices ran against this Synology's iperf3 server, and browser tests. Speeds are what the receiving side measured, in megabits per second.</div>
+      <div class="row ls-filters">
+        <select id="hi-dev"><option value="">All devices</option></select>
+        <select id="hi-kind"><option value="">Every kind of test</option><option value="run">Run here</option><option value="schedule">Scheduled</option><option value="server">iperf3 from the device</option><option value="browser">Browser</option></select>
+        <select id="hi-range"><option value="1">Last 24 hours</option><option value="7" selected>Last 7 days</option><option value="30">Last 30 days</option><option value="0">Everything listed</option></select>
+        <span class="muted small" id="hi-count"></span>
+      </div>
+      <div class="tiles" id="hi-tiles"></div>
+      <div class="card"><h2>Speed over time<span class="right ls-legend"><span><i style="background:var(--ls-to)"></i>Synology → device</span><span><i style="background:var(--ls-from)"></i>Device → Synology</span></span></h2>
+        <div class="in"><div class="ls-chart" id="hi-chart"></div></div></div>
+      <div class="card"><h2>Tests<span class="right"><a class="btn" id="hi-csv" href="#">Save all as CSV</a> <button class="btn danger" id="hi-clear" data-app>Clear history</button></span></h2>
+        <div class="ls-scroll"><table><thead><tr><th>When</th><th>Device</th><th>How</th><th class="n">Synology → device</th><th class="n">Device → Synology</th><th>Details</th><th class="n"></th></tr></thead><tbody id="hi-rows"></tbody></table></div>
+        <div class="in"><p class="muted small" id="hi-foot"></p></div></div>
+    </section>
+
+    <section data-page="schedule" hidden>
+      <div class="note">An iperf3 test from this Synology to one device on a schedule — your router, an access point, another NAS — so you see when the network gets slower, and DSM can tell you.</div>
+      <div class="tiles" id="sc-tiles"></div>
+      <div class="card"><h2>Scheduled test</h2><div class="in ls-form">
+        <div class="ls-grid">
+          <label class="f"><span>Test</span><select id="sc-every"><option value="off">Never — no scheduled tests</option><option value="15m">Every 15 minutes</option><option value="30m">Every 30 minutes</option><option value="1h">Every hour</option><option value="3h">Every 3 hours</option><option value="6h">Every 6 hours</option><option value="12h">Twice a day</option><option value="24h">Once a day</option></select></label>
+          <label class="f"><span>Device</span><select id="sc-dev"><option value="">Another address…</option></select></label>
+          <label class="f"><span>Address (IP or name)</span><input type="text" id="sc-host" maxlength="253" placeholder="192.168.1.1" autocomplete="off" spellcheck="false"></label>
+          <label class="f"><span>Its iperf3 port</span><input type="number" id="sc-port" min="1" max="65535" value="5201"></label>
+          <label class="f"><span>Protocol</span><select id="sc-proto"><option value="tcp">TCP</option><option value="udp">UDP</option></select></label>
+          <label class="f"><span>Direction</span><select id="sc-dir"><option value="up">Synology → device</option><option value="down">Device → Synology</option><option value="both">Both</option></select></label>
+          <label class="f"><span>Seconds (each direction)</span><input type="number" id="sc-secs" min="1" max="60" value="10"></label>
+          <label class="f"><span>Parallel streams</span><input type="number" id="sc-streams" min="1" max="16" value="1"></label>
+          <label class="f" id="sc-rate-f" hidden><span>UDP: send at (Mbit/s)</span><input type="number" id="sc-rate" min="1" max="10000" value="100"></label>
+        </div>
+        <h3 class="ls-h3">When it's slow</h3>
+        <div class="ls-grid">
+          <label class="f"><span>Slow is below (Mbit/s)</span><input type="number" id="sc-thr" min="0" max="100000" placeholder="0 — never"><span class="hint">On a 1 GbE wired link, 900 is a good start; on Wi-Fi, about half of what it usually manages.</span></label>
+          <label class="f"><span>Keep results</span><select id="sc-keep"><option value="30">30 days</option><option value="90">90 days</option><option value="180">6 months</option><option value="365">A year</option><option value="730">2 years</option><option value="0">For good</option></select></label>
+        </div>
+        <p><label><input type="checkbox" id="sc-alert"> Tell DSM when a scheduled test is slow or fails</label> <span class="muted small">— the bell in DSM, and your phone with DSM's push notifications; once when it starts, then at most every 6 hours while it lasts.</span></p>
+        <button class="btn primary" id="sc-save" data-app>Save</button></div></div>
+      <div class="card"><h2>Recent scheduled tests</h2><table><thead><tr><th>When</th><th class="n">Synology → device</th><th class="n">Device → Synology</th><th>Details</th></tr></thead><tbody id="sc-recent"></tbody></table></div>
+    </section>
+
+    <section data-page="howto" hidden>
+      <div class="card"><h2>A phone, tablet or laptop: the browser test</h2><div class="in ls-howto">
+        <img id="ht-qr" class="ls-qr" alt="QR code of the browser test's address">
+        <div style="flex:1;min-width:260px">
+          <p>Open this address on the device — scan the code with a phone's camera — and press <b>Start</b>. It measures download (Synology → device), upload (device → Synology), ping and jitter, and the result shows up in History.</p>
+          <p class="row"><span class="ls-addr" id="ht-url">…</span> <button class="btn" id="ht-copy-url">Copy</button> <a class="btn" id="ht-open" target="_blank" rel="noopener">Open</a></p>
+          <p class="muted small">Only this Synology is tested: nothing goes to the internet. Use the device where you normally use it — the result is that spot's Wi-Fi.</p>
+        </div></div></div>
+      <div class="card"><h2>A computer: iperf3</h2><div class="in">
+        <p>iperf3 measures the network alone, with no browser in the way — the most exact test. This Synology's iperf3 server listens on <b id="ht-port">5201</b> (TCP and UDP) <span id="ht-server"></span>. Install iperf3 on the computer, then run these there; each result shows up in History.</p>
+        <div class="tabs" id="ht-os"><button data-os="win" aria-selected="true">Windows</button><button data-os="mac">macOS</button><button data-os="linux">Linux</button></div>
+        <p class="muted small" id="ht-install"></p>
+        <table class="ls-cmds"><tbody id="ht-cmds"></tbody></table>
+        <p class="muted small">The other way round — this Synology testing the computer — is <a href="#" data-goto="run">Run a test</a>: start <code>iperf3 -s</code> on the computer first.</p></div></div>
+      <div class="card"><h2>What limits the result</h2><div class="in"><ul class="ls-list">
+        <li><b>Wi-Fi</b> is shared and half-duplex: expect roughly half the link speed the device shows, less through walls or far from the access point. Test wired first to know what the Synology itself manages.</li>
+        <li><b>1 GbE ports</b> top out at about 940 Mbit/s with TCP. The slowest link on the way counts: the Synology's port, the switch, the cable, the device's port.</li>
+        <li><b>Several ports on the Synology</b> (link aggregation) don't make one test faster — a single connection uses one port. Parallel streams can spread over them.</li>
+        <li><b>The browser test</b> also depends on the device and browser; a small phone or an old laptop can be the limit. Through DSM's reverse proxy or a VPN, those are measured too.</li>
+        <li><b>File copies are not involved:</b> iperf3 and the browser test send data from memory, so disks, SMB and the Synology's shares don't count. If copies are much slower than these results, look at the disks or SMB settings, not the network.</li>
+        <li><b>Small Synology models</b> may run out of processor before a 2.5 or 10 GbE link is full; several parallel streams help a little.</li></ul></div></div>
+    </section>

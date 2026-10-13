@@ -1,0 +1,57 @@
+# LAN Speed, as the Synology package runs it: the compose project in the
+# lanspeed shared folder. The setup container writes .env beside this.
+# - server: iperf3's server on this Synology's own network (host network, so
+#   tests see the real network card, not Docker's bridge), one test at a time;
+#   each test's report goes to the lanspeed_data volume for the history, which
+#   is kept there too (SQLite). The image is built by the package on the
+#   Synology from Alpine's iperf3 (setup/iperf3/Dockerfile).
+# - web: LibreSpeed, the browser speed test, LAN only: it tests against this
+#   Synology and nothing else. Its results (telemetry, SQLite) live in the
+#   lanspeed_librespeed volume and are copied into the history.
+services:
+  server:
+    image: ${IP_IMAGE:-lanspeed-iperf3:local}
+    container_name: lanspeed-server
+    restart: unless-stopped
+    network_mode: host
+    volumes:
+      - data:/data
+      - librespeed:/librespeed
+    environment:
+      TZ: ${TZ:-UTC}
+      IPERF_PORT: ${IPERF_PORT:-5201}
+    healthcheck:
+      test: ["CMD", "sh", "-c", "test ! -s /tmp/listen-error"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 20s
+
+  web:
+    image: ${LS_IMAGE:-ghcr.io/librespeed/speedtest:6.3.0-alpine}
+    container_name: lanspeed-web
+    restart: unless-stopped
+    ports:
+      - "${HTTP_PORT:-8790}:8080"
+    volumes:
+      - librespeed:/database
+    environment:
+      TZ: ${TZ:-UTC}
+      MODE: standalone
+      TITLE: LAN Speed
+      TELEMETRY: "true"
+      DB_TYPE: sqlite
+      # LibreSpeed's own results page (/results/stats.php) is locked with this; the DSM window shows the results instead.
+      PASSWORD: ${LS_STATS_PASSWORD}
+      ENABLE_ID_OBFUSCATION: "false"
+      REDACT_IP_ADDRESSES: "false"
+    healthcheck:
+      test: ["CMD", "wget", "-q", "-O", "/dev/null", "http://127.0.0.1:8080/backend/empty.php"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 20s
+
+volumes:
+  data:
+  librespeed:

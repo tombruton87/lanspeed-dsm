@@ -1,0 +1,10 @@
+, {
+    "step_title": "iperf3",
+    "items": [{
+        "type": "textfield",
+        "desc": "PCs and other computers test against this Synology with iperf3 (<code>iperf3 -c this-nas</code>). Its server needs a port of its own, for TCP and UDP. 5201 is iperf3's own, so nothing needs typing on the computers; if something here already uses it, another is suggested (computers then add <code>-p</code> and the port). It can be changed later in the window.",
+        "subitems": [{ "key": "wizard_iperf_port", "desc": "iperf3 port", "defaultValue": "$(first_free 5201 5202 5203)", "validator": { "allowBlank": false, "regex": { "expr": "$port_expr", "errorText": "A number from 1024 to 65535 that isn't in use on this Synology (and isn't the web port)" } } }]
+    }, {
+        "desc": "Phones and laptops test in the browser instead, at the web port from the previous page. Nothing goes to the internet: both tests are between your devices and this Synology. The window in DSM runs tests from the Synology to other devices, keeps every result, and can test on a schedule."
+    }]
+}
